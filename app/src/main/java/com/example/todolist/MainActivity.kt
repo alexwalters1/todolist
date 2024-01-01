@@ -16,8 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.screens.HomeScreen
-import com.example.todolist.screens.NotesScreen
 import com.example.todolist.screens.HomeViewModel
+import com.example.todolist.screens.NotesScreen
 import com.example.todolist.ui.theme.TodolistTheme
 
 class MainActivity : ComponentActivity() {

@@ -29,8 +29,11 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(
-    navController : NavController
+    navController : NavController,
+//    viewModel: NoteViewModel = viewModel()
 ) {
+//    val notes by viewModel.notes.collectAsState()
+
     val (title, setTitle) = androidx.compose.runtime.remember {
         androidx.compose.runtime.mutableStateOf("")
     }

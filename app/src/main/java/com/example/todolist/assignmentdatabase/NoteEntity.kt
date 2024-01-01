@@ -1,4 +1,5 @@
 package com.example.todolist.assignmentdatabase
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -9,4 +10,6 @@ import androidx.room.PrimaryKey
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @ColumnInfo("content")
+    val content: String,
 )
