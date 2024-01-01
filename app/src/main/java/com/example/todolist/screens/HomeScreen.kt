@@ -10,6 +10,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,9 +54,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.todolist.assignmentdatabase.AssignmentEntity
 import com.example.todolist.assignmentdatabase.addDate
-
 
 
 
@@ -62,9 +64,8 @@ import com.example.todolist.assignmentdatabase.addDate
 @Composable
 
 fun HomeScreen(
-
+    navController : NavController,
     viewModel: HomeViewModel = viewModel()
-
 ) {
     val assignments by viewModel.assignments.collectAsState()
 
@@ -159,25 +160,54 @@ fun HomeScreen(
                 ) {
                     Text(text = "Finish", color = Color.White)
                 }
+
             }
         }
     }
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     Scaffold(
-        containerColor = Color.LightGray,
+        containerColor = Color.White,
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color.DarkGray) {
+
+                Button(
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = { navController.navigate("screen1")}
+                        ),
+                    onClick = { navController.navigate("screen1")},
+                    shape = RoundedCornerShape(5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.White
+                    )
+                )
+                {
+                    Icon(Icons.Filled.Close, contentDescription = null)
+                }
+
+            }
+
+        },
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier,
                 onClick = {
                     setDialogOpen(true)
                 },
-                containerColor = Color.White,
-                contentColor = Color.Blue
+                containerColor = Color.DarkGray,
+                contentColor = Color.White
             ) {
                 Icon(Icons.Filled.Add, contentDescription = null)
             }
         }
-    ) { paddings ->
+    )
+    { paddings ->
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -219,12 +249,10 @@ fun HomeScreen(
                         ) }, onDelete = {
                             viewModel.deleteAssignments(assignments)
                         })
-
                     }
                 }
             }
         }
-
     }
 
 }
