@@ -69,7 +69,7 @@ fun NavigationApp() {
 
     NavHost(
         navController = navController,
-        startDestination = "screen1"
+        startDestination = "screen2"
     ) {
         composable("screen1") { NotesScreen(navController) }
         composable("screen2") { HomeScreen(navController) }

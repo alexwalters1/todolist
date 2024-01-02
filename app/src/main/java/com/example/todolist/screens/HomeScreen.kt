@@ -27,19 +27,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -155,7 +158,8 @@ fun HomeScreen(
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.Black
+                        contentColor = Color.White,
+                        containerColor = Color.DarkGray
                     )
                 ) {
                     Text(text = "Finish", color = Color.White)
@@ -169,31 +173,71 @@ fun HomeScreen(
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color.DarkGray) {
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "To Do List")
+                },
+                navigationIcon = {
+                    IconButton(onClick = {navController.navigate("screen1")}) {
+                        Icon(Icons.Filled.ArrowBack, "backIcon")
 
-                Button(
-                    modifier = Modifier
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                            onClick = { navController.navigate("screen1")}
-                        ),
-                    onClick = { navController.navigate("screen1")},
-                    shape = RoundedCornerShape(5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Color.White
+                    }
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.DarkGray,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                ),
+            )
+            }, content = { paddings ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                AnimatedVisibility(
+                    visible = assignments.isEmpty(),
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut(),
+
+                    ) {
+                    Text(
+                        text = "No Assignments Yet!",
+                        color = Color.Black,
+                        fontSize = 22.sp
                     )
-                )
-                {
-                    Icon(Icons.Filled.Close, contentDescription = null)
                 }
+                AnimatedVisibility(
+                    visible = assignments.isNotEmpty(),
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut(),
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                bottom = paddings.calculateBottomPadding() + 8.dp,
+                                top = 70.dp,
+                                end = 8.dp,
+                                start = 8.dp
+                            ), verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
 
+                        items(assignments.sortedBy { it.done }, key = {
+                            it.id
+                        }) { assignments ->
+                            AssignmentItem(assignmentEntity = assignments, onClick = { viewModel.updateAssignments(
+                                assignments.copy(done = !assignments.done)
+                            ) }, onDelete = {
+                                viewModel.deleteAssignments(assignments)
+                            })
+                        }
+                    }
+                }
             }
-
         },
+
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier,
@@ -207,53 +251,7 @@ fun HomeScreen(
             }
         }
     )
-    { paddings ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            AnimatedVisibility(
-                visible = assignments.isEmpty(),
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut(),
 
-                ) {
-                Text(
-                    text = "No Assignments Yet!",
-                    color = Color.Black,
-                    fontSize = 22.sp
-                )
-            }
-            AnimatedVisibility(
-                visible = assignments.isNotEmpty(),
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut(),
-            ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            bottom = paddings.calculateBottomPadding() + 8.dp,
-                            top = 8.dp,
-                            end = 8.dp,
-                            start = 8.dp
-                        ), verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    items(assignments.sortedBy { it.done }, key = {
-                        it.id
-                    }) { assignments ->
-                        AssignmentItem(assignmentEntity = assignments, onClick = { viewModel.updateAssignments(
-                            assignments.copy(done = !assignments.done)
-                        ) }, onDelete = {
-                            viewModel.deleteAssignments(assignments)
-                        })
-                    }
-                }
-            }
-        }
-    }
 
 }
 
