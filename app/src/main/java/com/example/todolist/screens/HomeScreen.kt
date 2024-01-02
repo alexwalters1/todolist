@@ -176,7 +176,7 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "To Do List")
+                    Text(text = "Assignments")
                 },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigate("screen1")}) {
